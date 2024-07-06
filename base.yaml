@@ -1,0 +1,30 @@
+architecture: amd64
+
+actions:
+  - action: debootstrap
+    suite: bookworm
+    components:
+      - main
+      - non-free-firmware
+    mirror: https://deb.debian.org/debian
+    variant: minbase
+
+  - action: apt
+    packages: [sudo, openssh-server, adduser, systemd-sysv, firmware-linux]
+
+  - action: apt
+    recommends: false
+    packages:
+      - linux-image-generic
+
+  - action: run
+    chroot: true
+    command: echo debian > /etc/hostname
+
+  - action: run
+    chroot: true
+    script: setup-user.sh
+
+  - action: "pack"
+    compression: gz
+    file: build/base-amd64.tar.gz

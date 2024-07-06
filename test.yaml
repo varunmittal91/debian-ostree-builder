@@ -1,0 +1,57 @@
+architecture: amd64
+
+actions:
+  - action: image-partition
+    imagename: "build/amd64.img"
+    imagesize: 4G
+    partitiontype: gpt
+    mountpoints:
+      - mountpoint: /
+        partition: root
+      - mountpoint: /boot/efi
+        partition: EFI
+        flags: [boot]
+      - mountpoint: /home
+        partition: home
+    partitions:
+      - name: EFI
+        fs: vfat
+        start: 6176s
+        end: 256M
+        options: [x-systemd.automount]
+      - name: root
+        fs: ext4
+        start: 256M
+        end: 2G
+      - name: home
+        fs: ext4
+        start: 2G
+        end: 100%
+
+  - action: unpack
+    file: "build/base-amd64.tar.gz"
+    compression: gz
+
+  - action: apt
+    packages: [systemd-boot, bmap-tools, qemu-utils]
+
+  - action: filesystem-deploy
+    description: Deploying filesystem onto image
+
+  - action: run
+    chroot: true
+    command: bootctl install
+
+  - action: apt
+    packages:
+      - grub-efi
+      - initramfs-tools
+      - linux-image-amd64
+
+  - action: run
+    chroot: true
+    command: update-grub
+
+  - action: run
+    chroot: true
+    command: grub-install --target=x86_64-efi --no-nvram
