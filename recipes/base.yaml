@@ -2,20 +2,34 @@ architecture: amd64
 
 actions:
   - action: debootstrap
-    suite: bookworm
+    suite: trixie
     components:
       - main
+      - contrib
+      - non-free
       - non-free-firmware
     mirror: https://deb.debian.org/debian
     variant: minbase
 
   - action: apt
-    packages: [sudo, openssh-server, adduser, systemd-sysv, firmware-linux]
+    recommends: true
+    packages:
+      - sudo
+      - adduser
+      - systemd-sysv
+      - firmware-linux
 
   - action: apt
-    recommends: false
+    recommends: true
     packages:
-      - linux-image-generic
+      - linux-image-amd64
+
+  - action: apt
+    packages:
+      - systemd-boot
+      - grub-efi
+      - initramfs-tools
+      - ostree
 
   - action: run
     chroot: true
@@ -23,7 +37,7 @@ actions:
 
   - action: run
     chroot: true
-    script: setup-user.sh
+    command: echo 127.0.1.1	debian > /etc/hosts
 
   - action: "pack"
     compression: gz

@@ -1,9 +1,11 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+
 architecture: amd64
 
 actions:
   - action: image-partition
     imagename: "build/amd64.img"
-    imagesize: 4G
+    imagesize: 8G
     partitiontype: gpt
     mountpoints:
       - mountpoint: /
@@ -22,31 +24,31 @@ actions:
       - name: root
         fs: ext4
         start: 256M
-        end: 2G
+        end: 5G
       - name: home
         fs: ext4
-        start: 2G
+        start: 5G
         end: 100%
 
   - action: unpack
     file: "build/base-amd64.tar.gz"
     compression: gz
 
-  - action: apt
-    packages: [systemd-boot, bmap-tools, qemu-utils]
+  - action: ostree-deploy
+    description: Deploying ostree onto image
+    repository: build/ostree/ostree/repo
+    branch: debian/testing/amd64
+    setup-fstab: true
+    os: debian
+    setup-kernel-cmdline: true
 
-  - action: filesystem-deploy
-    description: Deploying filesystem onto image
+  - action: run
+    chroot: true
+    script: setup-user.sh
 
   - action: run
     chroot: true
     command: bootctl install
-
-  - action: apt
-    packages:
-      - grub-efi
-      - initramfs-tools
-      - linux-image-amd64
 
   - action: run
     chroot: true

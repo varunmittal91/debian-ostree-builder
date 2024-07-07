@@ -6,3 +6,6 @@ adduser --gecos user \
   user
 adduser user sudo
 echo "user:user" | chpasswd
+
+# set root password
+echo "root:root" | chpasswd
