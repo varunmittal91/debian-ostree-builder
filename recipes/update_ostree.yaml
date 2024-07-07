@@ -10,10 +10,6 @@ actions:
     description: Package update
     command: apt-get update && apt-get dist-upgrade -y
 
-  # - action: run
-  #   chroot: true
-  #   command: cp boot/vmlinuz-6.9.7-amd64 boot/vmlinuz && cp boot/initrd.img-6.9.7-amd64 boot/initrd.img && ls /boot -l
-
   - action: run
     chroot: true
     script: kernel.sh
