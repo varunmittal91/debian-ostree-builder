@@ -23,7 +23,7 @@ fi
 if [ "$1" == "base" ]; then
     debos recipes/base.yaml
 elif [ "$1" == "ostree" ]; then
-    debos recipes/update_ostree.yaml
+    debos recipes/update_ostree.yaml --scratchsize=10G --cpus=8
 elif [ "$1" == "deploy" ]; then
     debos recipes/deploy.yaml    
 elif [ "$1" == "init" ]; then

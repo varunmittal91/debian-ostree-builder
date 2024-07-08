@@ -5,7 +5,7 @@ architecture: amd64
 actions:
   - action: image-partition
     imagename: "build/amd64.img"
-    imagesize: 8G
+    imagesize: 12G
     partitiontype: gpt
     mountpoints:
       - mountpoint: /
@@ -40,6 +40,9 @@ actions:
     setup-fstab: true
     os: debian
     setup-kernel-cmdline: true
+
+  - action: run
+    command: ostree checkout --repo=$ARTIFACTDIR/build/ostree/ostree/repo 7b93137ecb6b38725fa328ac8c4747fa576721f31d5278c44ce9bf5c4d6ca6a7 /scratch/mnt/ --union-add
 
   - action: run
     description: "Setting up fstab"

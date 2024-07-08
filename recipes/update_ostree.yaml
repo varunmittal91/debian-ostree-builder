@@ -12,6 +12,11 @@ actions:
 
   - action: run
     chroot: true
+    description: Package install
+    command: apt-get install -y task-laptop task-gnome-desktop --install-recommends && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+  - action: run
+    chroot: true
     script: kernel.sh
 
   - action: ostree-commit
