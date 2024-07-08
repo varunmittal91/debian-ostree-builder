@@ -13,8 +13,6 @@ actions:
       - mountpoint: /boot/efi
         partition: EFI
         flags: [boot]
-      - mountpoint: /home
-        partition: home
     partitions:
       - name: EFI
         fs: vfat
@@ -22,13 +20,14 @@ actions:
         end: 256M
         options: [x-systemd.automount]
       - name: root
-        fs: ext4
+        fs: btrfs
         start: 256M
-        end: 5G
-      - name: home
-        fs: ext4
-        start: 5G
         end: 100%
+
+  - action: run
+    description: "Creating subvolumes"
+    #command: btrfs subvolume create /scratch/mnt/root && btrfs subvolume create /scratch/mnt/var && btrfs subvolume create /scratch/mnt/home
+    script: fsdir.sh
 
   - action: unpack
     file: "build/base-amd64.tar.gz"
@@ -41,6 +40,11 @@ actions:
     setup-fstab: true
     os: debian
     setup-kernel-cmdline: true
+
+  - action: run
+    description: "Setting up fstab"
+    chroot: true
+    script: fstab.sh
 
   - action: run
     chroot: true
