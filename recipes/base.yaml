@@ -31,10 +31,6 @@ actions:
       - initramfs-tools
       - ostree
 
-  - action: apt
-    packages:
-      - task-xfce-desktop
-
   - action: run
     chroot: true
     command: echo debian > /etc/hostname

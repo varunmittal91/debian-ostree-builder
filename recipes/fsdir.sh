@@ -5,6 +5,8 @@ btrfs subvolume create /scratch/mnt/var
 btrfs subvolume create /scratch/mnt/etc
 btrfs subvolume create /scratch/mnt/var/home
 btrfs subvolume create /scratch/mnt/usr
+btrfs subvolume create /scratch/mnt/sysroot
+btrfs subvolume create /scratch/mnt/boot
 
 btrfs subvolume list /scratch/mnt
 

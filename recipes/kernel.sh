@@ -35,6 +35,9 @@ echo $(date --utc +%Y-%m-%dT%H:%M:%S%Z) >/timestamp
 echo "kernel: $kernel"
 echo "version: $version"
 
+# create mount dir for sysroot
+mkdir sysroot
+
 SYSTEMD_ESP_PATH=/boot/ kernel-install --verbose --entry-token literal:Default add "$version" "$kernel"
 
 # ostree kernel location: https://ostreedev.github.io/ostree/deployment/#contents-of-a-deployment

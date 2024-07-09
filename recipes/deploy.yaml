@@ -3,16 +3,20 @@
 architecture: amd64
 
 actions:
+  - action: unpack
+    file: "build/base-amd64.tar.gz"
+    compression: gz
+
   - action: image-partition
     imagename: "build/amd64.img"
-    imagesize: 12G
+    imagesize: 4G
     partitiontype: gpt
     mountpoints:
       - mountpoint: /
         partition: root
-      - mountpoint: /boot/efi
-        partition: EFI
-        flags: [boot]
+      # - mountpoint: /boot/efi
+      #   partition: EFI
+      #   flags: [boot]
     partitions:
       - name: EFI
         fs: vfat
@@ -26,23 +30,32 @@ actions:
 
   - action: run
     description: "Creating subvolumes"
-    #command: btrfs subvolume create /scratch/mnt/root && btrfs subvolume create /scratch/mnt/var && btrfs subvolume create /scratch/mnt/home
     script: fsdir.sh
 
-  - action: unpack
-    file: "build/base-amd64.tar.gz"
-    compression: gz
-
-  - action: ostree-deploy
-    description: Deploying ostree onto image
-    repository: build/ostree/ostree/repo
-    branch: debian/testing/amd64
-    setup-fstab: true
-    os: debian
-    setup-kernel-cmdline: true
+  - action: run
+    description: ostree
+    script: ostree.sh
 
   - action: run
-    command: ostree checkout --repo=$ARTIFACTDIR/build/ostree/ostree/repo 7b93137ecb6b38725fa328ac8c4747fa576721f31d5278c44ce9bf5c4d6ca6a7 /scratch/mnt/ --union-add
+    description: "Installing base system"
+    command: ls -lh /scratch/mnt && ls -lh /scratch/mnt/boot
+
+  # - action: ostree-deploy
+  #   description: Deploying ostree onto image
+  #   repository: build/ostree/ostree/repo
+  #   branch: debian/testing/amd64
+  #   setup-fstab: true
+  #   os: debian
+  #   setup-kernel-cmdline: true
+
+  - action: run
+    script: checkout.sh
+
+  - action: run
+    command: ostree log --repo /scratch/mnt/ostree/repo debian/testing/amd64
+
+  # - action: run
+  #   command: ostree checkout --repo=$ARTIFACTDIR/build/ostree/ostree/repo 7b93137ecb6b38725fa328ac8c4747fa576721f31d5278c44ce9bf5c4d6ca6a7 /scratch/mnt/ --union-add
 
   - action: run
     description: "Setting up fstab"
@@ -53,9 +66,13 @@ actions:
     chroot: true
     script: setup-user.sh
 
+  # - action: run
+  #   chroot: true
+  #   command: mount && ls -lh / && ls -lh /boot && ls -lh /boot/efi
+
   - action: run
     chroot: true
-    command: bootctl install
+    command: bootctl install --esp-path=/boot/efi
 
   - action: run
     chroot: true
