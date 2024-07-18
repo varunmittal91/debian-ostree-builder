@@ -27,7 +27,7 @@ echo "Mounting btrfs subvolumes - boot done"
 # ostree checkout 4bfd5675fb12df9db272eaf8a56ccfd62f3e00e0e17c5c42e82e88889caf3e1d ${OSTREE_DEPLOYMENT} --union-add
 ls -lh $OSTREE_DEPLOYMENT/usr/bin | grep nano
 
-mount --bind,rw /scratch/mnt/sysroot/ostree/deploy/debian/deploy/${OSTREE_CURRENT_DEPLOYMENT} /scratch/mnt/
+mount --bind -o rw /scratch/mnt/sysroot/ostree/deploy/debian/deploy/${OSTREE_CURRENT_DEPLOYMENT} /scratch/mnt/
 ls -lh /scratch/mnt
 
 cat /etc/fstab
@@ -48,17 +48,16 @@ mount --bind /dev/pts /scratch/mnt/dev/pts
 # mount --bind "${EIB_OSTREE_CHECKOUT}" "${OSTREE_DEPLOYMENT}"/sysroot
 
 # mount subvolumes systree using btrfs
-mount --bind,subvol=sysroot /dev/vda2 /scratch/mnt/sysroot
-mount --bind,subvol=var /dev/vda2 /scratch/mnt/var
-mount --bind,subvol=boot /dev/vda2 /scratch/mnt/boot
-mount --bind /dev/vda1 /scratch/mnt/boot/efi
+mount -o subvol=sysroot /dev/vda2 /scratch/mnt/sysroot
+mount -o subvol=var /dev/vda2 /scratch/mnt/var
+mount -o subvol=boot /dev/vda2 /scratch/mnt/boot
+
+mkdir /scratch/mnt/boot/efi
+mount /dev/vda1 /scratch/mnt/boot/efi
 
 # mount -o subvol=sysroot /dev/vda2 /scratch/mnt/sysroot
 # mount -o subvol=var /dev/vda2 /scratch/mnt/var
 # mount -o subvol=boot /dev/vda2 /scratch/mnt/boot
-
-mkdir -p /scratch/mnt/boot/efi
-mount /dev/vda1 /scratch/mnt/boot/efi
 
 echo "Mounting btrfs subvolumes"
 # ls -lh /scratch/mnt/etc

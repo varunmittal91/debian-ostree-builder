@@ -21,11 +21,11 @@ fi
 
 # Check if the argument is cmd1 or cmd2
 if [ "$1" == "base" ]; then
-    debos recipes/base.yaml
+    debos recipes/base.yaml --disable-fakemachine
 elif [ "$1" == "ostree" ]; then
-    debos recipes/update_ostree.yaml --scratchsize=10G --cpus=8
+    debos recipes/update_ostree.yaml --scratchsize=10G --cpus=8 --disable-fakemachine
 elif [ "$1" == "deploy" ]; then
-    debos recipes/deploy.yaml    
+    debos recipes/deploy.yaml --debug-shell --disable-fakemachine
 elif [ "$1" == "init" ]; then
     ./init_ostree.sh
 else

@@ -7,6 +7,16 @@ actions:
     file: "build/base-amd64.tar.gz"
     compression: gz
 
+  - action: apt
+    description: "Installing packages for ssh and ifconfig"
+    packages:
+      - openssh-server
+      - net-tools
+
+  - action: run
+    description: "enable ssh"
+    command: ifconfig && systemctl start ssh
+
   - action: image-partition
     imagename: "build/amd64.img"
     imagesize: 4G
@@ -19,7 +29,7 @@ actions:
       #   flags: [boot]
     partitions:
       - name: EFI
-        fs: vfat
+        fs: fat32
         start: 6176s
         end: 256M
         options: [x-systemd.automount]
@@ -57,10 +67,10 @@ actions:
   # - action: run
   #   command: ostree checkout --repo=$ARTIFACTDIR/build/ostree/ostree/repo 7b93137ecb6b38725fa328ac8c4747fa576721f31d5278c44ce9bf5c4d6ca6a7 /scratch/mnt/ --union-add
 
-  - action: run
-    description: "Setting up fstab"
-    chroot: true
-    script: fstab.sh
+  # - action: run
+  #   description: "Setting up fstab"
+  #   chroot: true
+  #   script: fstab.sh
 
   - action: run
     chroot: true
@@ -71,8 +81,8 @@ actions:
   #   command: mount && ls -lh / && ls -lh /boot && ls -lh /boot/efi
 
   - action: run
-    chroot: true
-    command: bootctl install --esp-path=/boot/efi
+    # chroot: true
+    command: chroot /scratch/mnt/ bootctl install --esp-path=/boot/efi --root /scratch/mnt/
 
   - action: run
     chroot: true

@@ -16,4 +16,8 @@ ls -l /boot
 ls -l /boot/efi
 mount
 
-bootctl install --esp-path=/boot/efi
+#bootctl install --esp-path=/boot/efi
+chroot /scratch/mnt/ bootctl install --esp-path=/boot/efi --root /scratch/mnt/
+
+
+#bootctl install --esp-path=/scratch/mnt/boot/efi --root /scratch/mnt/

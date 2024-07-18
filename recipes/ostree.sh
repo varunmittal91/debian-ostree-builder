@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ostree admin init-fs /scratch/mnt/sysroot
+ostree admin init-fs --modern /scratch/mnt/sysroot
 ostree admin os-init debian --sysroot /scratch/mnt/sysroot
 
 alias cp="rsync -ah --inplace --no-whole-file --info=progress2"
@@ -17,7 +17,13 @@ ostree log --repo /scratch/mnt/sysroot/ostree/repo debian/testing/amd64
 
 exit 1
 
+ostree checkout --sysroot /scratch/mnt/sysroot --union debian/testing/amd64
+
+#exit 1
+
 # mount --bind /scratch/mnt /scratch/mnt/sysroot/ostree/deploy/debian/deploy/${OSTREE_CURRENT_DEPLOYMENT}
 # mkdir -p /scratch/mnt/sysroot/ostree/deploy/debian/deploy/${OSTREE_CURRENT_DEPLOYMENT}/sysroot
 
 # echo nameserver 8.8.8.8 >> /scratch/root/etc/resolv.conf
+
+cd /scratch/mnt/ && ostree checkout --repo /scratch/mnt/sysroot/ostree/repo/ debian/testing/amd64 --subpath usr/etc --union-add -vvv
